@@ -9,7 +9,7 @@ import com.kinisoftware.coolconferenceskill.interceptor.LogResponseInterceptor
 
 class CoolConferenceStreamHandler : SkillStreamHandler(skill) {
     companion object {
-        const val CARD_TITLE = "Conferencia Molona"
+        const val CARD_TITLE = "Conferencia muy Molona"
 
         private val skill = Skills.custom()
             .addRequestInterceptor(LogRequestInterceptor())

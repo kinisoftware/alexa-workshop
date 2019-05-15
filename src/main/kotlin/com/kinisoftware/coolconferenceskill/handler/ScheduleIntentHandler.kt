@@ -4,10 +4,11 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.IntentRequest
 import com.amazon.ask.model.Response
+import com.amazon.ask.model.slu.entityresolution.StatusCode
 import com.amazon.ask.request.Predicates
 import com.kinisoftware.coolconferenceskill.CoolConferenceStreamHandler.Companion.CARD_TITLE
 import com.kinisoftware.coolconferenceskill.repository.TalksRepository
-import java.util.*
+import java.util.Optional
 
 class ScheduleIntentHandler : RequestHandler {
 
@@ -23,12 +24,15 @@ class ScheduleIntentHandler : RequestHandler {
 
         val talkTopic = slots["talkTopic"]
         val slotTime = slots["slotTime"]
+        val track = slots["track"]!!.resolutions.resolutionsPerAuthority
+                .first { it.status.code == StatusCode.ER_SUCCESS_MATCH }
+                .values[0].value.name.toInt()
 
-        val talks = TalksRepository().getTalks()
+        val talks = TalksRepository().getTalks().filter { it.track == track }
         val response = when {
             slotTime != null && slotTime.value != null -> {
                 val talk = talks.firstOrNull { it.time == slotTime.value }
-                var text = "A esa hora no hay ninguna charla planificada"
+                var text = "A esa hora no hay ninguna charla planificada en el $track"
                 talk?.let { text = "A esa hora tienes la charla: ${it.title}" }
                 text
             }
@@ -41,13 +45,14 @@ class ScheduleIntentHandler : RequestHandler {
                         "No hay charlas sobre ${talkTopic.value}"
                 }
             }
-            else -> "Estas son todas las charlas de la agenda: ${talks.joinToString(", ") { it.title }}"
+            else -> """Estas son todas las charlas de la agenda para el track $track:
+                |${talks.joinToString(", ") { it.title }}""".trimMargin()
         }
 
         return input.responseBuilder
-            .withSpeech(response)
-            .withSimpleCard(CARD_TITLE, response)
-            .withShouldEndSession(true)
-            .build()
+                .withSpeech(response)
+                .withSimpleCard(CARD_TITLE, response)
+                .withShouldEndSession(true)
+                .build()
     }
 }
