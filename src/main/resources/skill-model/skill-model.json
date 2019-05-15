@@ -1,0 +1,59 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "conferencia molona",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "ScheduleIntent",
+          "slots": [
+            {
+              "name": "slotTime",
+              "type": "AMAZON.TIME"
+            },
+            {
+              "name": "talkTopic",
+              "type": "TalkTopicType"
+            }
+          ],
+          "samples": [
+            "que charlas hay sobre {talkTopic}",
+            "las charlas",
+            "las charlas que hay",
+            "que hay",
+            "que hay a las {slotTime}",
+            "la charla que hay a las {slotTime}",
+            "la agenda"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "TalkTopicType",
+          "values": [
+            {
+              "name": {
+                "value": "Kotlin"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
