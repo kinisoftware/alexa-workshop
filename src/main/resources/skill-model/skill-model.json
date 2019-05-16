@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "conferencia molona",
+      "invocationName": "conferencia muy molona",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -29,20 +29,56 @@
             {
               "name": "talkTopic",
               "type": "TalkTopicType"
+            },
+            {
+              "name": "track",
+              "type": "TrackType",
+              "samples": [
+                "en {track}",
+                "en el {track}",
+                "del {track}",
+                "{track}"
+              ]
             }
           ],
           "samples": [
-            "que charlas hay sobre {talkTopic}",
-            "las charlas",
-            "las charlas que hay",
-            "que hay",
-            "que hay a las {slotTime}",
-            "la charla que hay a las {slotTime}",
-            "la agenda"
+            "que charlas hay sobre {talkTopic} en {track}",
+            "las charlas del {track}",
+            "las charlas que hay en {track}",
+            "que hay en {track}",
+            "que hay a las {slotTime} en {track}",
+            "la charla que hay a las {slotTime} en {track}",
+            "la agenda del {track}"
           ]
         }
       ],
       "types": [
+        {
+          "name": "TrackType",
+          "values": [
+            {
+              "name": {
+                "value": "2",
+                "synonyms": [
+                  "segundo",
+                  "segundo track",
+                  "auditorio"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "1",
+                "synonyms": [
+                  "primero",
+                  "primer tack",
+                  "sala ágora",
+                  "sala agora"
+                ]
+              }
+            }
+          ]
+        },
         {
           "name": "TalkTopicType",
           "values": [
@@ -54,6 +90,56 @@
           ]
         }
       ]
-    }
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "ScheduleIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "slotTime",
+              "type": "AMAZON.TIME",
+              "confirmationRequired": false,
+              "elicitationRequired": false,
+              "prompts": {}
+            },
+            {
+              "name": "talkTopic",
+              "type": "TalkTopicType",
+              "confirmationRequired": false,
+              "elicitationRequired": false,
+              "prompts": {}
+            },
+            {
+              "name": "track",
+              "type": "TrackType",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.1386551590624.1431773897280"
+              }
+            }
+          ]
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Slot.1386551590624.1431773897280",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "¿en qué track?"
+          },
+          {
+            "type": "PlainText",
+            "value": "¿de qué track?"
+          }
+        ]
+      }
+    ]
   }
 }
