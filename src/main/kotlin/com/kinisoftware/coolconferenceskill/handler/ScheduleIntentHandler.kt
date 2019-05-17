@@ -4,16 +4,21 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput
 import com.amazon.ask.dispatcher.request.handler.RequestHandler
 import com.amazon.ask.model.IntentRequest
 import com.amazon.ask.model.Response
-import com.amazon.ask.request.Predicates
-import com.kinisoftware.coolconferenceskill.CoolConferenceStreamHandler.Companion.CARD_TITLE
 import com.kinisoftware.coolconferenceskill.repository.TalksRepository
 import java.util.*
 
+/**
+ * 1) Extend RequestHandler
+ * 2) Override canHandle in order to check if the input Intent name matches with the one we want to handle here
+ * 3) Override handle:
+ *   3.1) Get talkTopic slot from the input intent
+ *   3.2) Add case for filtering the talks by the talkTopic if present
+ *   3.3) Build & return the response
+ */
 class ScheduleIntentHandler : RequestHandler {
 
-    override fun canHandle(input: HandlerInput): Boolean {
-        return input.matches(Predicates.intentName("ScheduleIntent"))
-    }
+    override fun canHandle(input: HandlerInput) = false
+
 
     override fun handle(input: HandlerInput): Optional<Response> {
         val request = input.requestEnvelope.request
@@ -21,7 +26,6 @@ class ScheduleIntentHandler : RequestHandler {
         val intent = intentRequest.intent
         val slots = intent.slots
 
-        val talkTopic = slots["talkTopic"]
         val slotTime = slots["slotTime"]
 
         val talks = TalksRepository().getTalks()
@@ -32,22 +36,10 @@ class ScheduleIntentHandler : RequestHandler {
                 talk?.let { text = "A esa hora tienes la charla: ${it.title}" }
                 text
             }
-            talkTopic != null && talkTopic.value != null -> {
-                val filteredTalksTitle = talks.filter { it.topics.contains(talkTopic.value) }.map { it.title }
-                when {
-                    filteredTalksTitle.isNotEmpty() ->
-                        "Las charlas sobre ${talkTopic.value} son: ${filteredTalksTitle.joinToString(", ")}"
-                    else ->
-                        "No hay charlas sobre ${talkTopic.value}"
-                }
-            }
+            // Add case for the talkTopic slot
             else -> "Estas son todas las charlas de la agenda: ${talks.joinToString(", ") { it.title }}"
         }
 
-        return input.responseBuilder
-            .withSpeech(response)
-            .withSimpleCard(CARD_TITLE, response)
-            .withShouldEndSession(true)
-            .build()
+        return Optional.empty() // Build & return the response
     }
 }

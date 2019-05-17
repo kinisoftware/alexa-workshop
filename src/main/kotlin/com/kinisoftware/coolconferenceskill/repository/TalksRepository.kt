@@ -4,7 +4,7 @@ import com.kinisoftware.coolconferenceskill.model.Talk
 
 class TalksRepository {
     fun getTalks() = listOf(
-        Talk("09:00", """<lang xml:lang="en-US">Keynote</lang>""", emptyList()),
+        Talk("09:00", "Keynote", emptyList()),
         Talk("10:15", "Dando a amor a los tests con Kotlin", listOf("testing", "kotlin")),
         Talk("11:15", "Alexa, ¿has venido para quedarte?", listOf("aws", "alexa")),
         Talk("12:15", "Java 10, ¿mito o realidad?", listOf("java", "jvm")),
